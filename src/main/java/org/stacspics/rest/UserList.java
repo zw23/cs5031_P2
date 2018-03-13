@@ -13,6 +13,7 @@ public class UserList {
                         .id()
                         .name("user1")
                         .numberOfComments(0)
+                        .email("user1@mockmail.com")
                         .build()
         );
 
@@ -21,6 +22,7 @@ public class UserList {
                         .id()
                         .name("user2")
                         .numberOfComments(0)
+                        .email("user2@mockmail.com")
                         .build()
         );
 
@@ -29,6 +31,7 @@ public class UserList {
                         .id()
                         .name("user3")
                         .numberOfComments(0)
+                        .email("user3@mockmail.com")
                         .build()
         );
 
@@ -37,6 +40,7 @@ public class UserList {
                         .id()
                         .name("user4")
                         .numberOfComments(0)
+                        .email("user4@mockmail.com")
                         .build()
         );
     }
@@ -51,11 +55,7 @@ public class UserList {
 
         list.stream()
                 .forEach(i-> System.out.println(i));
-//        String uString =
-//                list.stream()
-//                .map(c-> c.toString())
-//                .collect(Collectors.joining("\n"));
-//
+
     }
     public static void main(String[] args) {
         UserList.testList();
