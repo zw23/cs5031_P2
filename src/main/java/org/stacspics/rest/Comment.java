@@ -11,6 +11,8 @@ public class Comment {
     private final String time;
     private final long userId;
     private final String content;
+    private int upvote;
+    private int downvote;
 
 
 
@@ -24,6 +26,8 @@ public class Comment {
         this.userId = builder.userId;
         this.content = builder.content;
         this.replies = builder.replies;
+        this.upvote = builder.upvote;
+        this.downvote = builder.downvote;
     }
 
     public Comment(){
@@ -33,6 +37,8 @@ public class Comment {
         this.userId = cmt.getUserId();
         this.content = cmt.getContent();
         this.replies = cmt.getReplies();
+        this.upvote = cmt.getUpvote();
+        this.downvote = cmt.getDownvote();
     }
 
     public Comment(long userId, String content, Comment reply){
@@ -41,12 +47,16 @@ public class Comment {
                 .userId(userId)
                 .content(content)
                 .replies(reply)
+                .upvote()
+                .downvote()
                 .build();
         this.id = cmt.getId();
         this.time = cmt.getTime();
         this.userId = cmt.getUserId();
         this.content = cmt.getContent();
         this.replies = cmt.getReplies();
+        this.upvote = cmt.getUpvote();
+        this.downvote = cmt.getDownvote();
     }
 
 
@@ -66,6 +76,22 @@ public class Comment {
         return content;
     }
 
+    public int getUpvote() {
+        return upvote;
+    }
+
+    public int getDownvote() {
+        return downvote;
+    }
+
+    public int addUpvote(){
+        return upvote++;
+    }
+
+    public int addDownvote(){
+        return downvote++;
+    }
+
     public static AtomicLong getCounter() {
         return counter;
     }
@@ -79,13 +105,18 @@ public class Comment {
         return "Comment ID: "+id
                 +"\nComment time: "+time
                 +"\nUser ID: "+ userId
-                +"\nContent: "+ content;
+                +"\nContent: "+ content
+                +"\nUpvote: "+ upvote
+                +"\nDownvote: "+ downvote
+                +"\n----------";
     }
     public static class CommentBuilder{
         private long id;
         private String time;
         private long userId;
         private String content = "";
+        private int upvote = 0;
+        private int downvote = 0;
         private ArrayList<Comment> replies = new ArrayList<>();
 
         public CommentBuilder id(){
@@ -95,6 +126,16 @@ public class Comment {
 
         public CommentBuilder id(long id){
             this.id = id;
+            return this;
+        }
+
+        public CommentBuilder upvote(){
+            this.upvote = upvote;
+            return this;
+        }
+
+        public CommentBuilder downvote(){
+            this.downvote = downvote;
             return this;
         }
 

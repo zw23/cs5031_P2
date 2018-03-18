@@ -18,8 +18,6 @@ public class UserList {
                 .email("user1@mockmail.com")
                 .build();
 
-
-
         User user2 = new User.UserBuilder()
                 .id()
                 .name("user2")
@@ -49,28 +47,54 @@ public class UserList {
                 .userId(user1.getId())
                 .content("This is user1 comment")
                 .replies(null)
+                .upvote()
+                .downvote()
                 .build();
         Comment mockComment2 = new Comment.CommentBuilder().id()
                 .time()
                 .userId(user2.getId())
                 .content("This is user2 comment on user1 !!!")
                 .replies(null)
+                .upvote()
+                .downvote()
                 .build();
         Comment mockComment3 = new Comment.CommentBuilder().id()
                 .time()
                 .userId(user3.getId())
                 .content("This is user3 comment on user2 !!!")
                 .replies(null)
+                .upvote()
+                .downvote()
                 .build();
         Comment mockComment4 = new Comment.CommentBuilder().id()
                 .time()
                 .userId(user4.getId())
                 .content("This is user4 !!!")
                 .replies(null)
+                .upvote()
+                .downvote()
+                .build();
+        Comment mockComment5 = new Comment.CommentBuilder().id()
+                .time()
+                .userId(user3.getId())
+                .content("This is user3 comment !!!")
+                .replies(null)
+                .upvote()
+                .downvote()
+                .build();
+        Comment mockComment6 = new Comment.CommentBuilder().id()
+                .time()
+                .userId(user4.getId())
+                .content("This is user4 reply on comment 1!!!")
+                .replies(null)
+                .upvote()
+                .downvote()
                 .build();
 
         mockComment1.getReplies().add(mockComment2);
         mockComment2.getReplies().add(mockComment3);
+        mockComment2.getReplies().add(mockComment6);
+
 
 
 
@@ -78,6 +102,8 @@ public class UserList {
         cmtList.add(mockComment2);
         cmtList.add(mockComment3);
         cmtList.add(mockComment4);
+        cmtList.add(mockComment5);
+        cmtList.add(mockComment6);
 
         userList.add(user1);
         userList.add(user2);
@@ -92,4 +118,7 @@ public class UserList {
         return userList;
     }
 
+    public static CopyOnWriteArrayList<Comment> getCommentList(){
+        return cmtList;
+    }
 }
