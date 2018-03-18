@@ -145,9 +145,6 @@ public class UserList {
     public static CopyOnWriteArrayList<User> getInstance(){
         return userList;
     }
-
-    public static CopyOnWriteArrayList<Comment> getCommentList(){
-        return cmtList;
-    }
+    public static CopyOnWriteArrayList<Comment> getCommentList(){ return cmtList; }
     public static CopyOnWriteArrayList<Photo> getPhotoList(){return ptList;}
 }

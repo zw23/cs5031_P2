@@ -1,11 +1,15 @@
 package org.stacspics.rest;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.awt.*;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
@@ -60,5 +64,22 @@ public class PhotoService {
         }else{
             return "---No Photo found with such id.";
         }
+    }
+
+    @POST
+    @Path("/addPhoto")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response addUser(InputStream in){
+
+        Photo photo;
+
+        JsonParser parser = new JsonParser();
+        JsonElement jsonE = parser.parse(new InputStreamReader(in));
+        Gson gson = new Gson();
+        photo = gson.fromJson(jsonE,Photo.class);
+
+        ptList.add(photo);
+        return Response.status(201).build();
     }
 }
