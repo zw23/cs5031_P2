@@ -9,7 +9,7 @@ public class UserList {
 
     private static final CopyOnWriteArrayList<User> userList = new CopyOnWriteArrayList<>();
     private static final CopyOnWriteArrayList<Comment> cmtList = new CopyOnWriteArrayList<>();
-
+    private static final CopyOnWriteArrayList<Photo> ptList = new CopyOnWriteArrayList<>();
     static {
         User user1 = new User.UserBuilder()
                 .id()
@@ -91,12 +91,36 @@ public class UserList {
                 .downvote()
                 .build();
 
+        Photo mockPhoto0 = new Photo.PhotoBuilder()
+                .id()
+                .name("Photo0")
+                .description("It is the first photo on the server")
+                .postedBy(user1.getId())
+                .comments(null)
+                .build();
+
+        Photo mockPhoto1 = new Photo.PhotoBuilder()
+                .id()
+                .name("Photo 1")
+                .description("Me and my friends!!")
+                .postedBy(user2.getId())
+                .comments(null)
+                .build();
+        Photo mockPhoto2 = new Photo.PhotoBuilder()
+                .id()
+                .name("Photo 2")
+                .description("Some animals!!!")
+                .postedBy(user3.getId())
+                .comments(null)
+                .build();
+
         mockComment1.getReplies().add(mockComment2);
         mockComment2.getReplies().add(mockComment3);
         mockComment2.getReplies().add(mockComment6);
 
-
-
+        mockPhoto1.getComments().add(mockComment1);
+        mockPhoto0.getComments().add(mockComment4);
+        mockPhoto0.getComments().add(mockComment5);
 
         cmtList.add(mockComment1);
         cmtList.add(mockComment2);
@@ -110,6 +134,10 @@ public class UserList {
         userList.add(user3);
         userList.add(user4);
 
+        ptList.add(mockPhoto0);
+        ptList.add(mockPhoto1);
+        ptList.add(mockPhoto2);
+
     }
 
     private UserList(){}
@@ -121,4 +149,5 @@ public class UserList {
     public static CopyOnWriteArrayList<Comment> getCommentList(){
         return cmtList;
     }
+    public static CopyOnWriteArrayList<Photo> getPhotoList(){return ptList;}
 }

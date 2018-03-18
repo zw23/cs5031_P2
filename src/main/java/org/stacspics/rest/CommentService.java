@@ -28,6 +28,7 @@ public class CommentService {
         Optional<Comment> match
                 = cmtList.stream()
                 .filter(c->c.getId() == id)
+
                 .findFirst();
         if(match.isPresent()){
             return "---Comment---\n"
@@ -39,9 +40,9 @@ public class CommentService {
     }
 
     @GET
-    @Path("/user/{id}")
+    @Path("/user/{UserId}")
     @Produces(MediaType.TEXT_PLAIN)
-    public String getCommentByUserId(@PathParam("id")long id){
+    public String getCommentByUserId(@PathParam("UserId")long id){
         Optional<Comment> match
                 = cmtList.stream()
                 .filter(c ->c.getUserId() == id)
@@ -59,9 +60,9 @@ public class CommentService {
     }
 
     @POST
-    @Path("{id}/upvote")
+    @Path("{CommentId}/upvote")
     @Produces(MediaType.TEXT_PLAIN)
-    public String upvote(@PathParam("id")long id){
+    public String upvote(@PathParam("CommentId")long id){
         Optional<Comment> match
                 = cmtList.stream()
                 .filter(c -> c.getId() == id)
@@ -76,9 +77,9 @@ public class CommentService {
     }
 
     @POST
-    @Path("{id}/downvote")
+    @Path("{CommentId}/downvote")
     @Produces(MediaType.TEXT_PLAIN)
-    public String downvote(@PathParam("id")long id){
+    public String downvote(@PathParam("CommentId")long id){
         Optional<Comment> match
                 = cmtList.stream()
                 .filter(c -> c.getId() == id)
@@ -91,4 +92,31 @@ public class CommentService {
         }
 
     }
+
+    @GET
+    @Path("{CommentId}/replies")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String getRepliesByCommentId(@PathParam("CommentId")long id){
+        Optional<Comment> match
+                = cmtList.stream()
+                .filter(c -> c.getId() == id)
+                .filter(c -> c.getReplies() != null)
+                .findFirst();
+        if(match.isPresent()){
+
+            Integer i = (int)(long) id;
+            return "---Replies of comment id: " + id +"---\n"
+                    +cmtList
+                    .get(i)
+                    .getReplies()
+                    .stream()
+                    .map(c -> c.toString())
+                    .collect(Collectors.joining("\n"));
+
+        }else{
+            return "Sorry no comment with such id found";
+        }
+    }
+
+
 }

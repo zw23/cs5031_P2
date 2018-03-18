@@ -13,10 +13,8 @@ public class Comment {
     private final String content;
     private int upvote;
     private int downvote;
-
-
-
     private ArrayList<Comment> replies;
+
     private static final AtomicLong counter = new AtomicLong(0);
 
 
