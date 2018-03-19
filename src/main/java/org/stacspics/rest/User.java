@@ -77,7 +77,6 @@ public class User {
     public String toString(){
         return "ID: "+id
                 +"\nName: "+name
-                +"\nNumber of comments: "+ numberOfComments
                 +"\nEmail: "+ email
                 +"\nNumber of notifications: "+ notifications.size();
     }

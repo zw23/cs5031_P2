@@ -85,6 +85,8 @@ public class UserService {
             return "User must have a name";
         }else if(!hasEmail){
             return "Please enter an email address";
+        }else if(hasName && jsonE.getAsJsonObject().getAsJsonPrimitive("name").getAsString().equals("")){
+            return "Please enter a valid name.";
         }
 
             String userEmail = jsonE.getAsJsonObject().getAsJsonPrimitive("email").getAsString();
