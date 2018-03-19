@@ -1,4 +1,4 @@
-package org.stacspics.rest;
+package Services;
 
 
 import java.time.LocalDateTime;
@@ -10,7 +10,10 @@ public class Comment {
     private final long id;
     private final String time;
     private final long userId;
-    private final String content;
+
+
+
+    private String content;
     private int upvote;
     private int downvote;
     private final long originalPostId;
@@ -123,6 +126,10 @@ public class Comment {
         return photoId;
     }
 
+    public void setContent(String content) {
+        this.content = content;
+    }
+
     public static AtomicLong getCounter() {
         return counter;
     }
@@ -134,7 +141,7 @@ public class Comment {
     @Override
     public String toString(){
         if(isReply){
-            return "Comment ID: "+id + ", replied to comment id:"+ originalPostId
+            return "\nComment ID: "+id + ", replied to comment id:"+ originalPostId
                     +"\nComment time: "+time
                     +"\nUser ID: "+ userId
                     +"\nContent: "+ content

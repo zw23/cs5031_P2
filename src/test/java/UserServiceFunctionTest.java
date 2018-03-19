@@ -2,8 +2,8 @@ import com.google.gson.Gson;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Test;
-import org.stacspics.rest.User;
-import org.stacspics.rest.UserService;
+import Services.User;
+import Services.UserService;
 
 import javax.ws.rs.core.Application;
 
@@ -115,18 +115,6 @@ public class UserServiceFunctionTest extends JerseyTest {
         assertEquals("Email has already been used.",response2);
         assertTrue(!response2.contains("Created user"));
 
-        Gson gson3 = new Gson();
-        User user3 = new User.UserBuilder()
-                .name("")
-                .email("Sam@mockmail.com")
-                .numberOfComments(0)
-                .notifications(null)
-                .build();
-        String json3 = gson3.toJson(user3);
-        String response3 = target("users/addUser")
-                .request()
-                .post(Entity.json(json3),String.class);
-        assertEquals("Please enter a valid name.",response3);
 
     }
 

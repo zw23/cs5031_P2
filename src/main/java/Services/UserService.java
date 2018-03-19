@@ -1,14 +1,9 @@
-package org.stacspics.rest;
-import com.google.gson.Gson;
+package Services;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
-import jdk.nashorn.internal.parser.JSONParser;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Optional;
@@ -48,17 +43,32 @@ public class UserService {
         }
     }
     @DELETE
-    @Path("/delete/{id}")
+    @Path("/delete/{did}/{uid}")
     @Produces(MediaType.TEXT_PLAIN)
-    public String deleteUser(@PathParam("id")long id){
+    public String deleteUser(@PathParam("did")long did,@PathParam("uid")long uid){
         Optional<User>match
                 =uList.stream()
-                .filter(c->c.getId()==id)
+                .filter(c->c.getId()==did)
                 .findFirst();
+        Optional<User> isAdminExist
+                =uList.stream()
+                .filter(c->c.getId() ==uid)
+                .findFirst();
+        Optional<User> isAdmin
+                =uList.stream()
+                .filter(c->c.getId() ==uid)
+                .filter(c->c.isAdmin())
+                .findFirst();
+        if(!isAdminExist.isPresent()){
+            return "Admin does not exist.";
+        }else if(!isAdmin.isPresent()){
+            return "Sorry, the user who is doing this action is not an admin";
+        }
+
         if(match.isPresent()){
             uList.remove(
                     uList.stream()
-                            .filter(c->c.getId() ==id)
+                            .filter(c->c.getId() ==did)
                             .findFirst()
                             .get()
             );
@@ -85,8 +95,6 @@ public class UserService {
             return "User must have a name";
         }else if(!hasEmail){
             return "Please enter an email address";
-        }else if(hasName && jsonE.getAsJsonObject().getAsJsonPrimitive("name").getAsString().equals("")){
-            return "Please enter a valid name.";
         }
 
             String userEmail = jsonE.getAsJsonObject().getAsJsonPrimitive("email").getAsString();
@@ -98,13 +106,14 @@ public class UserService {
             if(existingEmail.isPresent()){
                 return "Email has already been used.";
             }else{
-
+                boolean isAdmin = jsonE.getAsJsonObject().getAsJsonPrimitive("isAdmin").getAsBoolean();
                 user = new User.UserBuilder()
                         .id()
                         .name(jsonE.getAsJsonObject().getAsJsonPrimitive("name").getAsString())
                         .email(userEmail)
                         .numberOfComments(0)
                         .notifications(null)
+                        .isAdmin(isAdmin)
                         .build();
                 uList.add(user);
             }

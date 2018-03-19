@@ -1,13 +1,10 @@
-package org.stacspics.rest;
+package Services;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import java.awt.*;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Optional;
@@ -23,7 +20,7 @@ public class PhotoService {
     @Path("/all")
     @Produces(MediaType.TEXT_PLAIN)
     public String getAllPhotos(){
-        return "---Photo List---"
+        return "---Photo List---\n"
                 +ptList.stream()
                 .map(c->c.toString())
                 .collect(Collectors.joining("\n"));
@@ -49,11 +46,19 @@ public class PhotoService {
     @Path("{PhotoId}/comments")
     @Produces(MediaType.TEXT_PLAIN)
     public String getPhotoCommentByPhotoId(@PathParam("PhotoId")long PhotoId){
-        Optional<Comment> match
+        Optional<Comment> commentsWithThisPhotoId
                 = cmtList.stream()
                 .filter(c -> c.getPhotoId() == PhotoId)
                 .findFirst();
-        if(match.isPresent()){
+        Optional<Photo> photoFound
+                = ptList.stream()
+                .filter(c -> c.getId() == PhotoId)
+                .findFirst();
+        if(!photoFound.isPresent()){
+            return "Sorry, no photo with this id.";
+        }
+
+        if(commentsWithThisPhotoId.isPresent()){
             Integer i = (int)(long) PhotoId;
             return "---Comments on photo " + PhotoId + "---\n"
                     +cmtList.stream()
@@ -61,8 +66,9 @@ public class PhotoService {
                     .map(c -> c.toString())
                     .collect(Collectors.joining("\n"));
         }else{
-            return "No Photo found with such id.";
+            return "No comments on this photo.";
         }
+
     }
 
     @POST

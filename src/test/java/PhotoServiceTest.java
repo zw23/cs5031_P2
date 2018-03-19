@@ -2,15 +2,13 @@ import com.google.gson.Gson;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Test;
-import org.stacspics.rest.Comment;
-import org.stacspics.rest.Photo;
-import org.stacspics.rest.PhotoService;
+import Services.Comment;
+import Services.Photo;
+import Services.PhotoService;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class PhotoServiceTest extends JerseyTest{

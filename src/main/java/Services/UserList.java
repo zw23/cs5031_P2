@@ -1,9 +1,6 @@
-package org.stacspics.rest;
+package Services;
 
-import java.sql.Timestamp;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 public class UserList {
 
@@ -17,6 +14,7 @@ public class UserList {
                 .numberOfComments(0)
                 .email("user1@mockmail.com")
                 .notifications(null)
+                .isAdmin(true)
                 .build();
 
         User user2 = new User.UserBuilder()
@@ -25,6 +23,7 @@ public class UserList {
                 .numberOfComments(0)
                 .email("user2@mockmail.com")
                 .notifications(null)
+                .isAdmin(false)
                 .build();
 
         User user3 = new User.UserBuilder()
@@ -33,6 +32,7 @@ public class UserList {
                 .numberOfComments(0)
                 .email("user3@mockmail.com")
                 .notifications(null)
+                .isAdmin(false)
                 .build();
 
         User user4 = new User.UserBuilder()
@@ -41,6 +41,7 @@ public class UserList {
                 .numberOfComments(0)
                 .email("user4@mockmail.com")
                 .notifications(null)
+                .isAdmin(false)
                 .build();
 
 
@@ -178,7 +179,7 @@ public class UserList {
         Notification nt6 = new Notification.NotificationBuilder().id()
                 .userId(user4.getId())
                 .isReply(true)
-                .originalId(mockComment6.getId())
+                .originalId(mockComment1.getId())
                 .commentId(mockComment6.getId())
                 .build();
 
@@ -196,7 +197,7 @@ public class UserList {
         mockComment1.getReplies().add(mockComment2);
 
         mockComment2.getReplies().add(mockComment3);
-        mockComment2.getReplies().add(mockComment6);
+        mockComment1.getReplies().add(mockComment6);
 
         mockPhoto0.getComments().add(mockComment4);
         mockPhoto0.getComments().add(mockComment5);

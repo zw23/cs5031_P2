@@ -1,4 +1,4 @@
-package org.stacspics.rest;
+package Services;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicLong;
@@ -13,6 +13,10 @@ public class User {
 
 
 
+    private final boolean isAdmin;
+
+
+
     private ArrayList<Notification> notifications;
 
     public static final AtomicLong counter = new AtomicLong(0);
@@ -23,6 +27,7 @@ public class User {
         this.numberOfComments = builder.numberOfComments;
         this.email = builder.email;
         this.notifications = builder.notifications;
+        this.isAdmin = builder.isAdmin;
 
     }
 
@@ -33,14 +38,16 @@ public class User {
         this.numberOfComments = user.getNumberOfComments();
         this.email = user.getEmail();
         this.notifications = user.getNotifications();
+        this.isAdmin = user.isAdmin();
     }
 
-    public User(long id, String name, int comments, Notification notification) {
-        User user = new User.UserBuilder()
+    public User(long id, String name, int comments, Notification notification,boolean isAdmin) {
+        User user = new UserBuilder()
                 .id()
                 .name(name)
                 .numberOfComments(comments)
                 .notifications(notification)
+                .isAdmin(isAdmin)
                 .build();
 
         this.id = user.getId();
@@ -48,6 +55,7 @@ public class User {
         this.numberOfComments = user.getNumberOfComments();
         this.email = user.getEmail();
         this.notifications = user.getNotifications();
+        this.isAdmin = user.isAdmin();
     }
     public long getId() {
         return id;
@@ -69,6 +77,10 @@ public class User {
         return notifications;
     }
 
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
     public static AtomicLong getCounter() {
         return counter;
     }
@@ -78,13 +90,15 @@ public class User {
         return "ID: "+id
                 +"\nName: "+name
                 +"\nEmail: "+ email
-                +"\nNumber of notifications: "+ notifications.size();
+                +"\nNumber of notifications: "+ notifications.size()
+                +"\nAdmin: "+ isAdmin;
     }
     public static class UserBuilder {
         private long id;
         private String name = "";
         private int numberOfComments;
         private String email = "";
+        private boolean isAdmin = false;
         private ArrayList<Notification> notifications = new ArrayList<>();
 
         public UserBuilder id(){
@@ -114,6 +128,11 @@ public class User {
                 return this;
             }
             this.notifications.add(notification);
+            return this;
+        }
+
+        public UserBuilder isAdmin(boolean isAdmin){
+            this.isAdmin = isAdmin;
             return this;
         }
 

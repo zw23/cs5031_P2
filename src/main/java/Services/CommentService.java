@@ -1,4 +1,4 @@
-package org.stacspics.rest;
+package Services;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -6,10 +6,9 @@ import com.google.gson.JsonParser;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import java.awt.*;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
@@ -117,17 +116,22 @@ public class CommentService {
                 .filter(c -> c.getReplies().size() == 0)
                 .findFirst();
 
-        if(match.isPresent()){
+        if(match.isPresent() && !sizeZero.isPresent()){
+            Comment cmt = match.get();
+            StringBuilder builder = new StringBuilder();
 
-            Integer i = (int)(long) id;
-            return "---Replies of comment id: " + id +"---\n"
-                    +cmtList
-                    .get(i)
-                    .getReplies()
-                    .stream()
-                    .map(c -> c.toString())
-                    .collect(Collectors.joining("\n"));
+            builder.append("---Original comment id: "+id+"---\n");
+            builder.append(cmt.toString());
+            builder.append("------------------------\n");
+            builder.append("Replies to this comment:");
 
+            for(int i = 0;i<cmt.getReplies().size();i++){
+                builder.append(cmt.getReplies().get(i).toString());
+                if(cmt.getReplies().get(i).getReplies().size()!=0){
+                    getReplies(cmt.getReplies().get(i).getReplies(),builder);
+                }
+            }
+            return builder.toString();
         }else if(sizeZero.isPresent()){
             return "No reply under this comment.";
         }else{
@@ -135,6 +139,14 @@ public class CommentService {
         }
     }
 
+    private void getReplies(ArrayList<Comment> reply,StringBuilder builer){
+        for(int i = 0;i<reply.size();i++){
+            builer.append(reply.get(i).toString());
+            if(reply.get(i).getReplies().size() != 0 ){
+                getReplies(reply.get(i).getReplies(),builer);
+            }
+        }
+    }
     @POST
     @Path("{CommentId}/makeComment")
     @Produces(MediaType.TEXT_PLAIN)
@@ -184,12 +196,13 @@ public class CommentService {
                         .build();
 
                 cmtList.add(cmt);
-
+                findUserOfOriginalComment.get().getReplies().add(cmt);
             Notification nt = new Notification.NotificationBuilder()
                     .id()
                     .isReply(true)
                     .originalId(CommentId)
                     .userId(userID)
+                    .commentId(cmt.getId())
                     .build();
 
             Notification ntPhotoPoster = new Notification.NotificationBuilder()
@@ -197,6 +210,7 @@ public class CommentService {
                     .isReply(false)
                     .originalId(originalPhotoId)
                     .userId(userID)
+                    .commentId(cmt.getId())
                     .build();
 
                 //Because this comment id must exist, so skip checking.
@@ -238,5 +252,38 @@ public class CommentService {
 
 
     }
+    @POST
+    @Path("{commentId}/delete/{uid}")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String deleteComment(@PathParam("commentId") long commentId, @PathParam("uid") long uid){
 
+        Optional<Comment> match
+                = cmtList.stream()
+                .filter(c->c.getId() == commentId)
+
+                .findFirst();
+        if(!match.isPresent()){
+            return "Comment with id not found";
+        }
+
+        Optional<User> userExist
+                = uList.stream()
+                .filter(c ->c.getId() == uid)
+                .findFirst();
+        if(!userExist.isPresent()){
+            return "No user with such ID";
+        }
+
+        Optional<User> adimExist
+                = uList.stream()
+                .filter(c ->c.getId() == uid)
+                .filter(c ->c.isAdmin())
+                .findFirst();
+        if(adimExist.isPresent()){
+            match.get().setContent("COMMENT HAS BEEN REMOVED BY AN ADMIN.");
+            return "Comment deleted.";
+        }else{
+            return "The user is not an admin.";
+        }
+    }
 }

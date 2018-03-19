@@ -2,9 +2,8 @@ import com.google.gson.Gson;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Test;
-import org.stacspics.rest.Comment;
-import org.stacspics.rest.CommentService;
-import org.stacspics.rest.User;
+import Services.Comment;
+import Services.CommentService;
 
 
 import javax.ws.rs.client.Entity;
