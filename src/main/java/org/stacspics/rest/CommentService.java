@@ -109,8 +109,14 @@ public class CommentService {
         Optional<Comment> match
                 = cmtList.stream()
                 .filter(c -> c.getId() == id)
-                .filter(c -> c.getReplies() != null)
+                .filter(c -> c.getReplies().size()!= 0)
                 .findFirst();
+        Optional<Comment> sizeZero
+                = cmtList.stream()
+                .filter(c -> c.getId() == id)
+                .filter(c -> c.getReplies().size() == 0)
+                .findFirst();
+
         if(match.isPresent()){
 
             Integer i = (int)(long) id;
@@ -122,6 +128,8 @@ public class CommentService {
                     .map(c -> c.toString())
                     .collect(Collectors.joining("\n"));
 
+        }else if(sizeZero.isPresent()){
+            return "No reply under this comment.";
         }else{
             return "Sorry no comment with such id found";
         }
@@ -151,8 +159,14 @@ public class CommentService {
                 .filter(c -> c.getId() == CommentId)
                 .findFirst();
 
-        long originalPhotoId = findUserOfOriginalComment.get().getPhotoId();
 
+
+        long originalPhotoId;
+        if(!findUserOfOriginalComment.isPresent()){
+            return "No such comment.";
+        }else {
+            originalPhotoId  = findUserOfOriginalComment.get().getPhotoId();
+        }
             //check if user exist.
             if(match.isPresent()){
 
