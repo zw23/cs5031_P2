@@ -70,17 +70,49 @@ public class UserService {
 
     @POST
     @Path("/addUser")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response addUser(InputStream in){
+    public String addUser(InputStream is){
         User user;
         JsonParser parser = new JsonParser();
-        JsonElement jsonE = parser.parse(new InputStreamReader(in));
-        Gson gson = new Gson();
-        user = gson.fromJson(jsonE,User.class);
+        JsonElement jsonE = parser.parse(new InputStreamReader(is));
 
-        uList.add(user);
-        return Response.status(201).build();
+        boolean hasName = jsonE.getAsJsonObject().has("name");
+        boolean hasEmail = jsonE.getAsJsonObject().has("email");
+
+
+        if(!hasName){
+            return "User must have a name";
+        }else if(!hasEmail){
+            return "Please enter an email address";
+        }
+
+            String userEmail = jsonE.getAsJsonObject().getAsJsonPrimitive("email").getAsString();
+            Optional<User> existingEmail
+                    = uList.stream()
+                    .filter(c -> c.getEmail().equals(userEmail) )
+                    .findFirst();
+
+            if(existingEmail.isPresent()){
+                return "Email has already been used.";
+            }else{
+
+                user = new User.UserBuilder()
+                        .id()
+                        .name(jsonE.getAsJsonObject().getAsJsonPrimitive("name").getAsString())
+                        .email(userEmail)
+                        .numberOfComments(0)
+                        .notifications(null)
+                        .build();
+                uList.add(user);
+            }
+
+
+
+
+        return "Created user";
+
+
     }
 
     @GET
