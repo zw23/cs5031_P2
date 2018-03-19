@@ -69,13 +69,13 @@ public class PhotoService {
     @Path("/addPhoto")
     @Produces(MediaType.TEXT_PLAIN)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response addPhoto(InputStream in){
+    public String addPhoto(InputStream in){
 
         Photo photo;
 
         JsonParser parser = new JsonParser();
         JsonElement jsonE = parser.parse(new InputStreamReader(in));
-        Gson gson = new Gson();
+
 
 
         long userID = jsonE.getAsJsonObject().getAsJsonPrimitive("postedBy").getAsLong();
@@ -95,9 +95,79 @@ public class PhotoService {
                     .build();
             ptList.add(photo);
             return "Successfully added photo!";
+        }else{
+            return "The user does not exist!";
         }
 
 
-        return Response.status(201).build();
+
+    }
+
+    @POST
+    @Path("{PhotoId}/makeComment")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String makeAComment(@PathParam("PhotoId")long PhotoId, InputStream is){
+        Comment cmt;
+        JsonParser parser = new JsonParser();
+        JsonElement jsonE = parser.parse(new InputStreamReader(is));
+
+        long userID = jsonE.getAsJsonObject().getAsJsonPrimitive("userId").getAsLong();
+        String content = jsonE.getAsJsonObject().getAsJsonPrimitive("content").getAsString();
+
+        Optional<User> match
+                =uList.stream()
+                .filter(c ->c.getId() == userID)
+                .findFirst();
+        Optional<Photo> photo
+                = ptList.stream()
+                .filter(c -> c.getId() == PhotoId)
+                .findFirst();
+
+        if(match.isPresent() && photo.isPresent()){
+            cmt = new Comment.CommentBuilder()
+                    .id()
+                    .time()
+                    .userId(userID)
+                    .content(content)
+                    .replies(null)
+                    .upvote()
+                    .downvote()
+                    .isReply(false)
+                    .originalPostId(PhotoId)
+                    .photoId(PhotoId)
+                    .build();
+
+            cmtList.add(cmt);
+            photo.get().getComments().add(cmt);
+
+            Notification ntPhotoPoster = new Notification.NotificationBuilder()
+                    .id()
+                    .isReply(false)
+                    .originalId(PhotoId)
+                    .userId(userID)
+                    .build();
+
+            Optional<Photo> originalPhoto
+                    =ptList.stream()
+                    .filter(c -> c.getId() == PhotoId)
+                    .findFirst();
+
+            long originalPhotoPosterId = originalPhoto.get().getPostedBy();
+
+            if(originalPhotoPosterId != userID){
+
+                Optional<User> originalPhotoPoster
+                        =uList.stream()
+                        .filter(c -> c.getId() == originalPhotoPosterId)
+                        .findFirst();
+                originalPhotoPoster.get().getNotifications().add(ntPhotoPoster);
+            }
+
+            return "Commented on photo id: "+ PhotoId +" with content :" + content + ".\n";
+        }else if(!match.isPresent()){
+            return "No such a user with this id.";
+        }else{
+            return "No such photo with this id";
+        }
     }
 }
