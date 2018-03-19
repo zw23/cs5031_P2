@@ -82,4 +82,28 @@ public class UserService {
         uList.add(user);
         return Response.status(201).build();
     }
+
+    @GET
+    @Path("{id}/notification")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String getUserNotification(@PathParam("id")long id){
+        Optional<User> match
+                = uList.stream()
+                .filter(c->c.getId() == id)
+                .filter(c->c.getNotifications().size()>0)
+                .findFirst();
+
+        if(match.isPresent()){
+
+            String message = match.get()
+                    .getNotifications()
+                    .stream()
+                    .map(c -> c.toString())
+                    .collect(Collectors.joining("\n"));
+            match.get().getNotifications().removeAll(match.get().getNotifications());
+            return message;
+        }else{
+            return "User not found or no notifications";
+        }
+    }
 }

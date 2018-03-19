@@ -17,7 +17,8 @@ import java.util.stream.Collectors;
 @Path("/photo")
 public class PhotoService {
     private final CopyOnWriteArrayList<Photo> ptList = UserList.getPhotoList();
-
+    private final CopyOnWriteArrayList<Comment> cmtList = UserList.getCommentList();
+    private final CopyOnWriteArrayList<User> uList = UserList.getInstance();
     @GET
     @Path("/all")
     @Produces(MediaType.TEXT_PLAIN)
@@ -48,17 +49,15 @@ public class PhotoService {
     @Path("{PhotoId}/comments")
     @Produces(MediaType.TEXT_PLAIN)
     public String getPhotoCommentByPhotoId(@PathParam("PhotoId")long PhotoId){
-        Optional<Photo> match
-                = ptList.stream()
-                .filter(c -> c.getId() == PhotoId)
-                .filter(c -> c.getComments() != null)
+        Optional<Comment> match
+                = cmtList.stream()
+                .filter(c -> c.getPhotoId() == PhotoId)
                 .findFirst();
         if(match.isPresent()){
             Integer i = (int)(long) PhotoId;
             return "---Comments on photo " + PhotoId + "---\n"
-                    +ptList.get(i)
-                    .getComments()
-                    .stream()
+                    +cmtList.stream()
+                    .filter(c ->c.getPhotoId() == PhotoId)
                     .map(c -> c.toString())
                     .collect(Collectors.joining("\n"));
         }else{
@@ -68,18 +67,37 @@ public class PhotoService {
 
     @POST
     @Path("/addPhoto")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response addUser(InputStream in){
+    public Response addPhoto(InputStream in){
 
         Photo photo;
 
         JsonParser parser = new JsonParser();
         JsonElement jsonE = parser.parse(new InputStreamReader(in));
         Gson gson = new Gson();
-        photo = gson.fromJson(jsonE,Photo.class);
 
-        ptList.add(photo);
+
+        long userID = jsonE.getAsJsonObject().getAsJsonPrimitive("postedBy").getAsLong();
+        String name = jsonE.getAsJsonObject().getAsJsonPrimitive("name").getAsString();
+        String description = jsonE.getAsJsonObject().getAsJsonPrimitive("description").getAsString();
+        Optional<User> checkUser
+                = uList.stream()
+                .filter(c -> c.getId() == userID)
+                .findFirst();
+        if(checkUser.isPresent()){
+            photo = new Photo.PhotoBuilder()
+                    .id()
+                    .name(name)
+                    .description(description)
+                    .postedBy(userID)
+                    .comments(null)
+                    .build();
+            ptList.add(photo);
+            return "Successfully added photo!";
+        }
+
+
         return Response.status(201).build();
     }
 }

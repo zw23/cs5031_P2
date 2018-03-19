@@ -1,5 +1,6 @@
 package org.stacspics.rest;
 
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class User {
@@ -8,10 +9,12 @@ public class User {
     private final long id;
     private final String name;
     private final int numberOfComments;
-
-
-
     private final String email;
+
+
+
+    private ArrayList<Notification> notifications;
+
     public static final AtomicLong counter = new AtomicLong(0);
 
     private User(UserBuilder builder){
@@ -19,6 +22,7 @@ public class User {
         this.name = builder.name;
         this.numberOfComments = builder.numberOfComments;
         this.email = builder.email;
+        this.notifications = builder.notifications;
 
     }
 
@@ -28,15 +32,22 @@ public class User {
         this.name = user.getName();
         this.numberOfComments = user.getNumberOfComments();
         this.email = user.getEmail();
+        this.notifications = user.getNotifications();
     }
 
-    public User(long id, String name, int comments) {
-        User user = new User.UserBuilder().id().name(name).numberOfComments(comments).build();
+    public User(long id, String name, int comments, Notification notification) {
+        User user = new User.UserBuilder()
+                .id()
+                .name(name)
+                .numberOfComments(comments)
+                .notifications(notification)
+                .build();
 
         this.id = user.getId();
         this.name = user.getName();
         this.numberOfComments = user.getNumberOfComments();
         this.email = user.getEmail();
+        this.notifications = user.getNotifications();
     }
     public long getId() {
         return id;
@@ -54,6 +65,10 @@ public class User {
         return email;
     }
 
+    public ArrayList<Notification> getNotifications() {
+        return notifications;
+    }
+
     public static AtomicLong getCounter() {
         return counter;
     }
@@ -63,13 +78,15 @@ public class User {
         return "ID: "+id
                 +"\nName: "+name
                 +"\nNumber of comments: "+ numberOfComments
-                +"\nEmail: "+ email;
+                +"\nEmail: "+ email
+                +"\nNumber of notifications: "+ notifications.size();
     }
     public static class UserBuilder {
         private long id;
         private String name = "";
         private int numberOfComments;
         private String email = "";
+        private ArrayList<Notification> notifications = new ArrayList<>();
 
         public UserBuilder id(){
             this.id = User.counter.getAndIncrement();
@@ -91,6 +108,13 @@ public class User {
         }
         public UserBuilder email(String email){
             this.email = email;
+            return this;
+        }
+        public UserBuilder notifications(Notification notification){
+            if(notification == null){
+                return this;
+            }
+            this.notifications.add(notification);
             return this;
         }
 

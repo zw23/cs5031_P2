@@ -13,6 +13,15 @@ public class Comment {
     private final String content;
     private int upvote;
     private int downvote;
+    private final long originalPostId;
+    private final boolean isReply;
+
+
+    private final long photoId;
+
+
+
+
     private ArrayList<Comment> replies;
 
     private static final AtomicLong counter = new AtomicLong(0);
@@ -26,6 +35,9 @@ public class Comment {
         this.replies = builder.replies;
         this.upvote = builder.upvote;
         this.downvote = builder.downvote;
+        this.originalPostId = builder.originalPostId;
+        this.isReply = builder.isReply;
+        this.photoId = builder.photoId;
     }
 
     public Comment(){
@@ -37,9 +49,12 @@ public class Comment {
         this.replies = cmt.getReplies();
         this.upvote = cmt.getUpvote();
         this.downvote = cmt.getDownvote();
+        this.originalPostId = cmt.getOriginalPostId();
+        this.isReply = cmt.isReply();
+        this.photoId = cmt.getPhotoId();
     }
 
-    public Comment(long userId, String content, Comment reply){
+    public Comment(long userId, String content, Comment reply,long originalPostId,boolean isReply,long photoId){
         Comment cmt = new CommentBuilder().id()
                 .time()
                 .userId(userId)
@@ -47,6 +62,9 @@ public class Comment {
                 .replies(reply)
                 .upvote()
                 .downvote()
+                .originalPostId(originalPostId)
+                .isReply(isReply)
+                .photoId(photoId)
                 .build();
         this.id = cmt.getId();
         this.time = cmt.getTime();
@@ -55,6 +73,9 @@ public class Comment {
         this.replies = cmt.getReplies();
         this.upvote = cmt.getUpvote();
         this.downvote = cmt.getDownvote();
+        this.originalPostId = cmt.getOriginalPostId();
+        this.isReply = cmt.isReply();
+        this.photoId = cmt.getPhotoId();
     }
 
 
@@ -90,6 +111,18 @@ public class Comment {
         return downvote++;
     }
 
+    public long getOriginalPostId() {
+        return originalPostId;
+    }
+
+    public boolean isReply() {
+        return isReply;
+    }
+
+    public long getPhotoId() {
+        return photoId;
+    }
+
     public static AtomicLong getCounter() {
         return counter;
     }
@@ -100,13 +133,26 @@ public class Comment {
 
     @Override
     public String toString(){
-        return "Comment ID: "+id
-                +"\nComment time: "+time
-                +"\nUser ID: "+ userId
-                +"\nContent: "+ content
-                +"\nUpvote: "+ upvote
-                +"\nDownvote: "+ downvote
-                +"\n----------";
+        if(isReply){
+            return "Comment ID: "+id + ", replied to comment id:"+ originalPostId
+                    +"\nComment time: "+time
+                    +"\nUser ID: "+ userId
+                    +"\nContent: "+ content
+                    +"\nUpvote: "+ upvote
+                    +"\nDownvote: "+ downvote
+                    +"\nReplies on this comment: "+getReplies().size()
+                    +"\n----------";
+        }else{
+            return "Comment ID: "+id + ", commented to photo id:"+ originalPostId
+                    +"\nComment time: "+time
+                    +"\nUser ID: "+ userId
+                    +"\nContent: "+ content
+                    +"\nUpvote: "+ upvote
+                    +"\nDownvote: "+ downvote
+                    +"\nReplies on this comment: "+getReplies().size()
+                    +"\n----------";
+        }
+
     }
     public static class CommentBuilder{
         private long id;
@@ -115,6 +161,10 @@ public class Comment {
         private String content = "";
         private int upvote = 0;
         private int downvote = 0;
+        private long originalPostId;
+        private boolean isReply;
+        private long photoId;
+
         private ArrayList<Comment> replies = new ArrayList<>();
 
         public CommentBuilder id(){
@@ -153,11 +203,25 @@ public class Comment {
             return this;
         }
 
+        public CommentBuilder isReply(boolean isReply){
+            this.isReply = isReply;
+            return this;
+        }
+
+        public CommentBuilder originalPostId(long originalPostId){
+            this.originalPostId = originalPostId;
+            return this;
+        }
+
         public CommentBuilder replies(Comment reply){
             if (reply == null)
                 return this;
 
             this.replies.add(reply);
+            return this;
+        }
+        public CommentBuilder photoId(long photoId){
+            this.photoId = photoId;
             return this;
         }
 
