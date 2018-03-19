@@ -61,7 +61,7 @@ public class PhotoService {
                     .map(c -> c.toString())
                     .collect(Collectors.joining("\n"));
         }else{
-            return "---No Photo found with such id.";
+            return "No Photo found with such id.";
         }
     }
 
