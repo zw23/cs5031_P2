@@ -9,6 +9,10 @@ public class Notification {
     private final boolean isReply;
 
 
+
+    private final long commentId;
+
+
     private static final AtomicLong counter = new AtomicLong(0);
 
     private Notification(NotificationBuilder builder){
@@ -16,6 +20,7 @@ public class Notification {
         this.userId = builder.userId;
         this.isReply = builder.isReply;
         this.originalId = builder.originalId;
+        this.commentId = builder.commentId;
 
     }
 
@@ -25,21 +30,24 @@ public class Notification {
         this.userId = nt.getUserId();
         this.originalId = nt.getOriginalId();
         this.isReply = nt.isReply();
+        this.commentId = nt.commentId;
 
     }
 
-    public Notification(long userId,long originalId,boolean isReply){
+    public Notification(long userId,long originalId,boolean isReply,long commentId){
         Notification nt = new NotificationBuilder()
                 .id()
                 .userId(userId)
                 .originalId(originalId)
                 .isReply(isReply)
+                .commentId(commentId)
                 .build();
 
         this.id = nt.getId();
         this.userId = nt.getUserId();
         this.originalId = nt.getOriginalId();
         this.isReply = nt.isReply();
+        this.commentId = nt.getCommentId();
 
     }
 
@@ -59,19 +67,23 @@ public class Notification {
         return isReply;
     }
 
+    public long getCommentId() {
+        return commentId;
+    }
+
     @Override
     public String toString(){
         if(isReply){
-            return "---Notifications--- "
+            return "---Notification--- "
                     +"\nNotification ID: "+ id
                     +"\nUser ID: "+ userId
-                    +"\nReplied on your COMMENT, original comment id: "+originalId
+                    +"\nReplied on your COMMENT(id:"+originalId+"), new comment id: "+commentId
                     +"\n--------------------------";
         }else{
-            return "---Notifications--- "
+            return "---Notification--- "
                     +"\nNotification ID: "+ id
                     +"\nUser ID: "+ userId
-                    +"\nCommented on your PHOTO, photo id: "+originalId
+                    +"\nCommented on your PHOTO(id:"+originalId+"), new comment id: "+commentId
                     +"\n--------------------------";
         }
     }
@@ -81,6 +93,7 @@ public class Notification {
         private long userId;
         private boolean isReply;
         private long originalId;
+        private long commentId;
 
         public NotificationBuilder id(){
             this.id = Notification.counter.getAndIncrement();
@@ -108,6 +121,11 @@ public class Notification {
             this.originalId = originalId;
             return this;
 
+        }
+
+        public NotificationBuilder commentId(long commentId){
+            this.commentId = commentId;
+            return this;
         }
 
         public Notification build(){

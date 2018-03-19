@@ -144,36 +144,42 @@ public class UserList {
                 .userId(user1.getId())
                 .isReply(false)
                 .originalId(mockPhoto1.getId())
+                .commentId(mockComment1.getId())
                 .build();
 
         Notification nt2 = new Notification.NotificationBuilder().id()
                 .userId(user2.getId())
                 .isReply(true)
                 .originalId(mockComment1.getId())
+                .commentId(mockComment2.getId())
                 .build();
 
         Notification nt3 = new Notification.NotificationBuilder().id()
                 .userId(user3.getId())
                 .isReply(true)
                 .originalId(mockComment2.getId())
+                .commentId(mockComment3.getId())
                 .build();
 
         Notification nt4 = new Notification.NotificationBuilder().id()
                 .userId(user4.getId())
                 .isReply(false)
                 .originalId(mockPhoto0.getId())
+                .commentId(mockComment4.getId())
                 .build();
 
         Notification nt5 = new Notification.NotificationBuilder().id()
                 .userId(user3.getId())
                 .isReply(false)
                 .originalId(mockPhoto0.getId())
+                .commentId(mockComment5.getId())
                 .build();
 
         Notification nt6 = new Notification.NotificationBuilder().id()
                 .userId(user4.getId())
                 .isReply(true)
                 .originalId(mockComment6.getId())
+                .commentId(mockComment6.getId())
                 .build();
 
 
