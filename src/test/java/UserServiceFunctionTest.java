@@ -1,3 +1,4 @@
+import Services.MockList;
 import com.google.gson.Gson;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
@@ -11,11 +12,14 @@ import javax.ws.rs.core.Application;
 
 import javax.ws.rs.client.Entity;
 
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class UserServiceFunctionTest extends JerseyTest {
 
+    CopyOnWriteArrayList<User> ulist = MockList.getInstance();
     @Override
     protected Application configure() {
         return new ResourceConfig(UserService.class);
@@ -51,7 +55,7 @@ public class UserServiceFunctionTest extends JerseyTest {
             if(users[i].contains("Name")) userNumber++;
         }
 
-        assertEquals(4,userNumber);
+        assertEquals(ulist.size(),userNumber);
     }
 
     @Test
@@ -69,7 +73,6 @@ public class UserServiceFunctionTest extends JerseyTest {
         User user = new User.UserBuilder()
                 .name("Tom")
                 .email("tom@mockmail.com")
-                .numberOfComments(0)
                 .notifications(null)
                 .build();
 
@@ -88,7 +91,6 @@ public class UserServiceFunctionTest extends JerseyTest {
         User user = new User.UserBuilder()
                 .name("Sam")
                 .email("Sam@mockmail.com")
-                .numberOfComments(0)
                 .notifications(null)
                 .build();
 
@@ -104,7 +106,6 @@ public class UserServiceFunctionTest extends JerseyTest {
         User user2 = new User.UserBuilder()
                 .name("Sam")
                 .email("Sam@mockmail.com")
-                .numberOfComments(0)
                 .notifications(null)
                 .build();
         String json2 = gson2.toJson(user2);
@@ -120,7 +121,7 @@ public class UserServiceFunctionTest extends JerseyTest {
 
     @Test
     public void deleteUser(){
-        String response = target("users/delete/2")
+        String response = target("users/delete/2/0")
                 .request()
                 .delete(String.class);
 
@@ -130,13 +131,13 @@ public class UserServiceFunctionTest extends JerseyTest {
 
     @Test
     public void deleteNoneExistingUser(){
-        String response = target("users/delete/1")
+        String response = target("users/delete/1/0")
                 .request()
                 .delete(String.class);
 
         assertEquals("User deleted.",response);
 
-        String response2 = target("users/delete/1")
+        String response2 = target("users/delete/1/0")
                 .request()
                 .delete(String.class);
 

@@ -8,7 +8,6 @@ public class User {
 
     private final long id;
     private final String name;
-    private final int numberOfComments;
     private final String email;
 
 
@@ -24,7 +23,6 @@ public class User {
     private User(UserBuilder builder){
         this.id = builder.id;
         this.name = builder.name;
-        this.numberOfComments = builder.numberOfComments;
         this.email = builder.email;
         this.notifications = builder.notifications;
         this.isAdmin = builder.isAdmin;
@@ -35,24 +33,21 @@ public class User {
         User user = new User.UserBuilder().id().build();
         this.id = user.getId();
         this.name = user.getName();
-        this.numberOfComments = user.getNumberOfComments();
         this.email = user.getEmail();
         this.notifications = user.getNotifications();
         this.isAdmin = user.isAdmin();
     }
 
-    public User(long id, String name, int comments, Notification notification,boolean isAdmin) {
+    public User(long id, String name, Notification notification,boolean isAdmin) {
         User user = new UserBuilder()
                 .id()
                 .name(name)
-                .numberOfComments(comments)
                 .notifications(notification)
                 .isAdmin(isAdmin)
                 .build();
 
         this.id = user.getId();
         this.name = user.getName();
-        this.numberOfComments = user.getNumberOfComments();
         this.email = user.getEmail();
         this.notifications = user.getNotifications();
         this.isAdmin = user.isAdmin();
@@ -65,9 +60,6 @@ public class User {
         return name;
     }
 
-    public int getNumberOfComments() {
-        return numberOfComments;
-    }
 
     public String getEmail() {
         return email;
@@ -96,7 +88,6 @@ public class User {
     public static class UserBuilder {
         private long id;
         private String name = "";
-        private int numberOfComments;
         private String email = "";
         private boolean isAdmin = false;
         private ArrayList<Notification> notifications = new ArrayList<>();
@@ -115,10 +106,6 @@ public class User {
             return this;
         }
 
-        public UserBuilder numberOfComments(int comments){
-            this.numberOfComments = 0;
-            return this;
-        }
         public UserBuilder email(String email){
             this.email = email;
             return this;

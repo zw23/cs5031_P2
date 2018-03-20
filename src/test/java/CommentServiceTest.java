@@ -89,9 +89,9 @@ public class CommentServiceTest extends JerseyTest{
     @Test
     public void getRepliesByCommentId(){
         String response = target("comments/1/replies").request().get(String.class);
-        assertTrue(response.contains("---Replies of comment id: 1---"));
+        assertTrue(response.contains("---Original comment id: 1---"));
+        assertTrue(response.contains("Comment ID: 1"));
         assertTrue(response.contains("Comment ID: 2"));
-        assertTrue(response.contains("Comment ID: 5"));
 
         String response2 = target("comments/4/replies").request().get(String.class);
         assertTrue(response2.contains("No reply under this comment."));

@@ -16,9 +16,15 @@ import java.util.stream.Collectors;
 @Path("/comments")
 public class CommentService {
 
-    private final CopyOnWriteArrayList<Comment> cmtList = UserList.getCommentList();
-    private final CopyOnWriteArrayList<User> uList = UserList.getInstance();
-    private final CopyOnWriteArrayList<Photo> ptList = UserList.getPhotoList();
+    private final CopyOnWriteArrayList<Comment> cmtList = MockList.getCommentList();
+    private final CopyOnWriteArrayList<User> uList = MockList.getInstance();
+    private final CopyOnWriteArrayList<Photo> ptList = MockList.getPhotoList();
+
+    /**
+     * Method loop the comment list and print all of comments
+     *
+     * @return returns a string message
+     */
     @GET
     @Path("/all")
     @Produces(MediaType.TEXT_PLAIN)
@@ -28,6 +34,7 @@ public class CommentService {
                 .map(c->c.toString())
                 .collect(Collectors.joining("\n"));
     }
+
 
     @GET
     @Path("{id}")
@@ -47,6 +54,11 @@ public class CommentService {
         }
     }
 
+    /**
+     *
+     * @param id this is user id, use this to find all comments that was posted by this user.
+     * @return
+     */
     @GET
     @Path("/user/{UserId}")
     @Produces(MediaType.TEXT_PLAIN)
@@ -67,6 +79,12 @@ public class CommentService {
         }
     }
 
+    /**
+     *
+     * @param id find the comment first,
+     *           set the upvote value +1.
+     * @return
+     */
     @POST
     @Path("{CommentId}/upvote")
     @Produces(MediaType.TEXT_PLAIN)
@@ -84,6 +102,12 @@ public class CommentService {
 
     }
 
+    /**
+     *
+     * @param id find the comment first,
+     *           set the downvote value +1.
+     * @return
+     */
     @POST
     @Path("{CommentId}/downvote")
     @Produces(MediaType.TEXT_PLAIN)
@@ -101,6 +125,15 @@ public class CommentService {
 
     }
 
+    /**
+     *
+     * @param id
+     * There is a nested method to get all the replies under this comment,
+     *           the method go through all the replies array to check if the size is bigger than 0
+     *           if it is, check deeper.
+     *           if not, append all replies that has been found.
+     * @return
+     */
     @GET
     @Path("{CommentId}/replies")
     @Produces(MediaType.TEXT_PLAIN)
@@ -147,6 +180,18 @@ public class CommentService {
             }
         }
     }
+
+    /**
+     * Method checks if the user, original comment exist first.
+     * Then add a comment to the original comment,
+     * add notification to original comment poster and original photo poster.
+     *
+     * @param CommentId The original comment
+     * @param is input json
+     *
+     *
+     * @return
+     */
     @POST
     @Path("{CommentId}/makeComment")
     @Produces(MediaType.TEXT_PLAIN)
@@ -252,6 +297,17 @@ public class CommentService {
 
 
     }
+
+    /**
+     * Method checks if there is an comment with given id,
+     * checks if the user exist and if the user is an admin or not.
+     *
+     * When deleted, the content change to :"COMMENT HAS BEEN REMOVED BY AN ADMIN."
+     *
+     * @param commentId the original comment id.
+     * @param uid the user that commenting on the original comment.
+     * @return
+     */
     @POST
     @Path("{commentId}/delete/{uid}")
     @Produces(MediaType.TEXT_PLAIN)

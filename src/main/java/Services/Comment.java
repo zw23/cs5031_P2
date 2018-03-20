@@ -10,9 +10,6 @@ public class Comment {
     private final long id;
     private final String time;
     private final long userId;
-
-
-
     private String content;
     private int upvote;
     private int downvote;

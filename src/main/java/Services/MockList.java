@@ -2,7 +2,7 @@ package Services;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class UserList {
+public class MockList {
 
     private static final CopyOnWriteArrayList<User> userList = new CopyOnWriteArrayList<>();
     private static final CopyOnWriteArrayList<Comment> cmtList = new CopyOnWriteArrayList<>();
@@ -11,7 +11,6 @@ public class UserList {
         User user1 = new User.UserBuilder()
                 .id()
                 .name("user1")
-                .numberOfComments(0)
                 .email("user1@mockmail.com")
                 .notifications(null)
                 .isAdmin(true)
@@ -20,7 +19,6 @@ public class UserList {
         User user2 = new User.UserBuilder()
                 .id()
                 .name("user2")
-                .numberOfComments(0)
                 .email("user2@mockmail.com")
                 .notifications(null)
                 .isAdmin(false)
@@ -29,7 +27,6 @@ public class UserList {
         User user3 = new User.UserBuilder()
                 .id()
                 .name("user3")
-                .numberOfComments(0)
                 .email("user3@mockmail.com")
                 .notifications(null)
                 .isAdmin(false)
@@ -38,7 +35,6 @@ public class UserList {
         User user4 = new User.UserBuilder()
                 .id()
                 .name("user4")
-                .numberOfComments(0)
                 .email("user4@mockmail.com")
                 .notifications(null)
                 .isAdmin(false)
@@ -222,7 +218,7 @@ public class UserList {
 
     }
 
-    private UserList(){}
+    private MockList(){}
 
     public static CopyOnWriteArrayList<User> getInstance(){
         return userList;

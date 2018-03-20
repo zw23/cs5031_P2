@@ -12,6 +12,8 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import java.util.Scanner;
 
+import static java.lang.System.exit;
+
 public class SimpleClient {
 
 
@@ -33,7 +35,7 @@ public class SimpleClient {
         String mainMenu = "1.User action\n"
                 +"2.Photo action\n"
                 +"3.Comment action\n"
-                +"Quit";
+                +"4.Quit";
 
         System.out.println(mainMenu);
         int quitNumber = 0;
@@ -52,6 +54,8 @@ public class SimpleClient {
                 case 3 :
                     commentMenu();
                     break;
+                case 4 :
+                    exit(0);
                 default:
                     System.out.println("Please enter an valid number.");
 
@@ -117,7 +121,6 @@ public class SimpleClient {
                     User user = new User.UserBuilder()
                             .name(name)
                             .email(email)
-                            .numberOfComments(0)
                             .notifications(null)
                             .isAdmin(admin)
                             .build();

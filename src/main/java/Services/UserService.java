@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class UserService {
 
 
-    private final CopyOnWriteArrayList<User> uList = UserList.getInstance();
+    private final CopyOnWriteArrayList<User> uList = MockList.getInstance();
 
     @GET
     @Path("/all")
@@ -42,6 +42,17 @@ public class UserService {
             return "User not found";
         }
     }
+
+    /**
+     * The method checks if the target user is exist,
+     * also checks if the user who is doing the action is an admin.
+     *
+     *
+     *
+     * @param did The user id that we are going to delete.
+     * @param uid The user id who is doing the action.
+     * @return
+     */
     @DELETE
     @Path("/delete/{did}/{uid}")
     @Produces(MediaType.TEXT_PLAIN)
@@ -89,12 +100,14 @@ public class UserService {
 
         boolean hasName = jsonE.getAsJsonObject().has("name");
         boolean hasEmail = jsonE.getAsJsonObject().has("email");
-
+        boolean hasAdmin = jsonE.getAsJsonObject().has("isAdmin");
 
         if(!hasName){
             return "User must have a name";
         }else if(!hasEmail){
             return "Please enter an email address";
+        }else if(!hasAdmin){
+            return "Please specify if the user is an administrator.";
         }
 
             String userEmail = jsonE.getAsJsonObject().getAsJsonPrimitive("email").getAsString();
@@ -111,7 +124,6 @@ public class UserService {
                         .id()
                         .name(jsonE.getAsJsonObject().getAsJsonPrimitive("name").getAsString())
                         .email(userEmail)
-                        .numberOfComments(0)
                         .notifications(null)
                         .isAdmin(isAdmin)
                         .build();
@@ -126,6 +138,14 @@ public class UserService {
 
     }
 
+
+    /**
+     * Notifications are created when comments are made.
+     * Once the client called this method under a user, the notification will be removed from the list.
+     *
+     * @param id
+     * @return
+     */
     @GET
     @Path("{id}/notification")
     @Produces(MediaType.TEXT_PLAIN)

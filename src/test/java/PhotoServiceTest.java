@@ -6,6 +6,7 @@ import Services.Comment;
 import Services.Photo;
 import Services.PhotoService;
 
+import javax.ws.rs.PathParam;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
 
@@ -29,8 +30,7 @@ public class PhotoServiceTest extends JerseyTest{
     public void findPhotoById(){
         String response = target("photo/1").request().get(String.class);
         assertTrue(response.contains("----Photo with id: 1-----"));
-        assertTrue(response.contains("Photo ID: 1"));
-        assertTrue(response.contains("Photo name: Photo 1"));
+
 
     }
 
@@ -44,13 +44,16 @@ public class PhotoServiceTest extends JerseyTest{
     public void getCommentsUnderPhotoById(){
         String response = target("photo/0/comments").request().get(String.class);
         assertTrue(response.contains("---Comments on photo 0---"));
-        assertTrue(response.contains("Comment ID: 1"));
-        assertTrue(response.contains("Comment ID: 2"));
-        assertTrue(response.contains("Comment ID: 3"));
 
-        String response2 = target("photo/99/comments").request().get(String.class);
 
-        assertTrue(response2.contains("No Photo found with such id."));
+
+
+    }
+    @Test
+    public void invalidGetCommentsUnderPhotoById(){
+        String response = target("photo/99/comments").request().get(String.class);
+
+        assertTrue(response.contains("Sorry, no photo with this id."));
     }
 
     @Test

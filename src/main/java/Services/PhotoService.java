@@ -13,9 +13,10 @@ import java.util.stream.Collectors;
 
 @Path("/photo")
 public class PhotoService {
-    private final CopyOnWriteArrayList<Photo> ptList = UserList.getPhotoList();
-    private final CopyOnWriteArrayList<Comment> cmtList = UserList.getCommentList();
-    private final CopyOnWriteArrayList<User> uList = UserList.getInstance();
+    private final CopyOnWriteArrayList<Photo> ptList = MockList.getPhotoList();
+    private final CopyOnWriteArrayList<Comment> cmtList = MockList.getCommentList();
+    private final CopyOnWriteArrayList<User> uList = MockList.getInstance();
+
     @GET
     @Path("/all")
     @Produces(MediaType.TEXT_PLAIN)
@@ -26,6 +27,13 @@ public class PhotoService {
                 .collect(Collectors.joining("\n"));
     }
 
+    /**
+     * Method checks if there is a photo with given id.
+     * Print the photo stats.
+     *
+     * @param PhotoId The photo id that we need to find.
+     * @return
+     */
     @GET
     @Path("{PhotoId}")
     @Produces(MediaType.TEXT_PLAIN)
@@ -42,6 +50,13 @@ public class PhotoService {
         }
     }
 
+    /**
+     * In the comment class there is a originalPhotoId value.
+     * This method get all the comment with the given originalPhotoId and print them.
+     *
+     * @param PhotoId The comment that has this id.
+     * @return
+     */
     @GET
     @Path("{PhotoId}/comments")
     @Produces(MediaType.TEXT_PLAIN)
@@ -70,6 +85,7 @@ public class PhotoService {
         }
 
     }
+
 
     @POST
     @Path("/addPhoto")
@@ -109,6 +125,15 @@ public class PhotoService {
 
     }
 
+    /**
+     * Same as make comment, find the photo first and make a comment on this photo.
+     * When comment is made, give notifications to photo poster.
+     *
+     *
+     * @param PhotoId The photo that we are going to comment on.
+     * @param is input json
+     * @return
+     */
     @POST
     @Path("{PhotoId}/makeComment")
     @Produces(MediaType.TEXT_PLAIN)
