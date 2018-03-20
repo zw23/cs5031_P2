@@ -21,7 +21,7 @@ public class SimpleClient {
     static Client client = ClientBuilder.newClient();
     static WebTarget webTarget = client.target("http://localhost:8080/myapp/");
 
-    static Scanner in = new Scanner(System.in);
+    static Scanner in = new Scanner(System.in, "UTF-8");
 
 
     public static void main(String[] arge){
@@ -261,7 +261,9 @@ public class SimpleClient {
                 case 9:
                     mainMenu();
                     break;
-
+                default:
+                    System.out.println("Please enter a valid number.");
+                    break;
             }
         }
     }
@@ -376,6 +378,10 @@ public class SimpleClient {
                     
                 case 9 :
                     mainMenu();
+                    break;
+
+                default:
+                    System.out.println("Please enter a vliad number.");
                     break;
             }
         }

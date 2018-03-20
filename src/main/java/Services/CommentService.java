@@ -8,6 +8,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -196,12 +197,12 @@ public class CommentService {
     @Path("{CommentId}/makeComment")
     @Produces(MediaType.TEXT_PLAIN)
     @Consumes(MediaType.APPLICATION_JSON)
-    public String makeAComment(@PathParam("CommentId")long CommentId, InputStream is){
+    public String makeAComment(@PathParam("CommentId")long CommentId, InputStream is) throws UnsupportedEncodingException {
 
         Comment cmt;
         JsonParser parser = new JsonParser();
-        JsonElement jsonE = parser.parse(new InputStreamReader(is));
-        Gson gson = new Gson();
+        JsonElement jsonE = parser.parse(new InputStreamReader(is, "UTF-8"));
+
         // getting the poster id in the json block for user check.
         long userID = jsonE.getAsJsonObject().getAsJsonPrimitive("userId").getAsLong();
         String content = jsonE.getAsJsonObject().getAsJsonPrimitive("content").getAsString();

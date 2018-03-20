@@ -7,6 +7,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
@@ -74,7 +75,6 @@ public class PhotoService {
         }
 
         if(commentsWithThisPhotoId.isPresent()){
-            Integer i = (int)(long) PhotoId;
             return "---Comments on photo " + PhotoId + "---\n"
                     +cmtList.stream()
                     .filter(c ->c.getPhotoId() == PhotoId)
@@ -91,12 +91,12 @@ public class PhotoService {
     @Path("/addPhoto")
     @Produces(MediaType.TEXT_PLAIN)
     @Consumes(MediaType.APPLICATION_JSON)
-    public String addPhoto(InputStream in){
+    public String addPhoto(InputStream in) throws UnsupportedEncodingException {
 
         Photo photo;
 
         JsonParser parser = new JsonParser();
-        JsonElement jsonE = parser.parse(new InputStreamReader(in));
+        JsonElement jsonE = parser.parse(new InputStreamReader(in, "UTF-8"));
 
 
 
@@ -137,10 +137,10 @@ public class PhotoService {
     @POST
     @Path("{PhotoId}/makeComment")
     @Produces(MediaType.TEXT_PLAIN)
-    public String makeAComment(@PathParam("PhotoId")long PhotoId, InputStream is){
+    public String makeAComment(@PathParam("PhotoId")long PhotoId, InputStream is) throws UnsupportedEncodingException {
         Comment cmt;
         JsonParser parser = new JsonParser();
-        JsonElement jsonE = parser.parse(new InputStreamReader(is));
+        JsonElement jsonE = parser.parse(new InputStreamReader(is, "UTF-8"));
 
         long userID = jsonE.getAsJsonObject().getAsJsonPrimitive("userId").getAsLong();
         String content = jsonE.getAsJsonObject().getAsJsonPrimitive("content").getAsString();

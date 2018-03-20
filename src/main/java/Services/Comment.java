@@ -182,12 +182,12 @@ public class Comment {
         }
 
         public CommentBuilder upvote(){
-            this.upvote = upvote;
+            this.upvote = 0;
             return this;
         }
 
         public CommentBuilder downvote(){
-            this.downvote = downvote;
+            this.downvote = 0;
             return this;
         }
 

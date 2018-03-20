@@ -26,7 +26,7 @@ public class UserServiceFunctionTest extends JerseyTest {
     }
 
     @Test
-    public void UserNotFoundTest() {
+    public void userNotFoundTest() {
         String response = target("users/4").request().get(String.class);
         assertTrue(response.contains("User not found"));
     }
